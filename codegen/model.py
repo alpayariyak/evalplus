@@ -455,9 +455,9 @@ Write a solution to the following problem:
 class OpenAIChatDecoder(DecoderBase):
     def __init__(self, name: str, **kwargs) -> None:
         super().__init__(name, **kwargs)
-        self.client = openai.OpenAI()
-
-    def codegen(
+        self.client = openai.AsyncClient()
+    
+    async def codegen(
         self, prompt: str, do_sample: bool = True, num_samples: int = 200
     ) -> List[str]:
         if do_sample:
@@ -473,7 +473,7 @@ class OpenAIChatDecoder(DecoderBase):
 
         message += f"\n```python\n{prompt.strip()}\n```"
 
-        ret = openai_request.make_auto_request(
+        ret = await openai_request.make_auto_request(
             self.client,
             message=message,
             model=self.name,

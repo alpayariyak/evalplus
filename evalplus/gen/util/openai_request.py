@@ -5,8 +5,8 @@ import openai
 from openai.types.chat import ChatCompletion
 
 
-def make_request(
-    client: openai.Client,
+async def make_request(
+    client: openai.AsyncClient,
     message: str,
     model: str,
     max_tokens: int = 512,
@@ -21,7 +21,7 @@ def make_request(
     ):
         system_msg = "You are a helpful assistant designed to output JSON."
 
-    return client.chat.completions.create(
+    return await client.chat.completions.create(
         model=model,
         messages=[
             {"role": "system", "content": system_msg},
@@ -39,13 +39,13 @@ def handler(signum, frame):
     raise Exception("end of time")
 
 
-def make_auto_request(*args, **kwargs) -> ChatCompletion:
+async def make_auto_request(*args, **kwargs) -> ChatCompletion:
     ret = None
     while ret is None:
         try:
             signal.signal(signal.SIGALRM, handler)
             signal.alarm(100)
-            ret = make_request(*args, **kwargs)
+            ret = await make_request(*args, **kwargs)
             signal.alarm(0)
         except openai.RateLimitError:
             print("Rate limit exceeded. Waiting...")
@@ -64,3 +64,4 @@ def make_auto_request(*args, **kwargs) -> ChatCompletion:
             signal.alarm(0)
             time.sleep(1)
     return ret
+
