@@ -304,7 +304,7 @@ class OpenAIChatDecoder(DecoderBase):
             max_tokens=self.max_new_tokens,
             temperature=self.temperature,
             n=batch_size,
-            response_format={"type": fmt},
+            # response_format={"type": fmt},
         )
 
         outputs = []
